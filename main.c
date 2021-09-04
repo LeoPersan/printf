@@ -34,44 +34,14 @@ int ft_print_string(char *string, int *formaters)
 	return (width + chars);
 }
 
-int ft_print_int(int number, int *formaters)
-{
-	char	c;
-	int		chars;
-
-	chars = 0;
-	if (number < 0)
-	{
-		write(1, "-", 1);
-		if (number == -2147483648)
-		{
-			write(1, "2", 1);
-			number = -147483648;
-		}
-		return 2 + ft_print_int(number * -1, formaters);
-	}
-	else if (number > 9)
-	{
-		ft_print_int(number / 10, formaters);
-		c = (number % 10) + '0';
-		write(1, &c, 1);
-	}
-	else
-	{
-		c = number + '0';
-		write(1, &c, 1);
-	}
-	return 1;
-}
-
-int ft_print_unsigned_int(unsigned int number, int *formaters)
+int ft_print_unsigned_int_aux(size_t number)
 {
 	char	c;
 	int		chars;
 
 	if (number > 9)
 	{
-		chars = ft_print_unsigned_int(number / 10, formaters);
+		chars = ft_print_unsigned_int_aux(number / 10);
 		c = (number % 10) + '0';
 		write(1, &c, 1);
 	}
@@ -84,14 +54,64 @@ int ft_print_unsigned_int(unsigned int number, int *formaters)
 	return 1 + chars;
 }
 
-int ft_print_hexadecimal(size_t number, char *base, int *formaters)
+int ft_print_unsigned_int(size_t number, int *formaters)
+{
+	int		width;
+	size_t	chars;
+	size_t	number_aux;
+
+	chars = 0;
+	number_aux = number;
+	while (number_aux)
+	{
+		number_aux /= 10;
+		chars++;
+	}
+	width = -1;
+	while (++width + chars < formaters[1])
+		write(1, " ", 1);
+	return (width + ft_print_unsigned_int_aux(number));
+}
+
+int ft_print_int(int number, int *formaters)
+{
+	size_t	chars;
+	int		width;
+	int		number_aux;
+
+	chars = (number < 0);
+	number_aux = number;
+	while (number_aux)
+	{
+		number_aux /= 10;
+		chars++;
+	}
+	width = -1;
+	while (++width + chars < formaters[1])
+		write(1, " ", 1);
+	if (number < 0)
+	{
+		write(1, "-", 1);
+		width++;
+		if (number == -2147483648)
+		{
+			width++;
+			write(1, "2", 1);
+			number = -147483648;
+		}
+		number *= -1;
+	}
+	return (width + ft_print_unsigned_int_aux(number));
+}
+
+int ft_print_hexadecimal_aux(size_t number, char *base)
 {
 	char	c;
 	int		chars;
 
 	if (number > 15)
 	{
-		chars = ft_print_hexadecimal(number / 16, base, formaters);
+		chars = ft_print_hexadecimal_aux(number / 16, base);
 		c = base[number % 16];
 		write(1, &c, 1);
 	}
@@ -104,10 +124,43 @@ int ft_print_hexadecimal(size_t number, char *base, int *formaters)
 	return 1 + chars;
 }
 
+int ft_print_hexadecimal(size_t number, char *base, int *formaters)
+{
+	int		width;
+	size_t	chars;
+	size_t	number_aux;
+
+	chars = 0;
+	number_aux = number;
+	while (number_aux)
+	{
+		number_aux /= 16;
+		chars++;
+	}
+	width = -1;
+	while (++width + chars < formaters[1])
+		write(1, " ", 1);
+	return (width + ft_print_hexadecimal_aux(number, base));
+}
+
 int ft_print_pointer(void *pointer, int *formaters)
 {
+	int		width;
+	size_t	chars;
+	size_t	number_aux;
+
+	chars = 0;
+	number_aux = (size_t) pointer;
+	while (number_aux)
+	{
+		number_aux /= 16;
+		chars++;
+	}
+	width = 1;
+	while (++width + chars < formaters[1])
+		write(1, " ", 1);
 	write(1, "0x", 2);
-	return (2 + ft_print_hexadecimal((size_t) pointer, "0123456789abcdef", formaters));
+	return (width + ft_print_hexadecimal_aux((size_t) pointer, "0123456789abcdef"));
 }
 
 int ft_print_percent()
@@ -128,7 +181,7 @@ int	ft_conversors(char *string, va_list args, int *formaters)
 	if (*string == 'd' || *string == 'i')
 		return ft_print_int(va_arg(args, int), formaters);
 	if (*string == 'u')
-		return ft_print_unsigned_int(va_arg(args, unsigned int), formaters);
+		return ft_print_unsigned_int(va_arg(args, size_t), formaters);
 	if (*string == 'x')
 		return ft_print_hexadecimal(va_arg(args, int), "0123456789abcdef", formaters);
 	if (*string == 'X')
@@ -255,20 +308,18 @@ int main(void)
 
 	   printf("            : %d\n",    printf("             CHAR: |%5c|", 'A'));
 	ft_printf("            : %d\n", ft_printf("             CHAR: |%5c|", 'A'));
-			printf("           : %d\n",    printf("           STRING: |%5s|", "ABCDEF"));
-		 ft_printf("           : %d\n", ft_printf("           STRING: |%5s|", "ABCDEF"));
-					printf("   : %d\n",    printf("          POINTER: |%5p|", &pointer));
-				 ft_printf("   : %d\n", ft_printf("          POINTER: |%5p|", &pointer));
-		 printf("            : %d\n",    printf("          DECIMAL: |%5d|", -42));
-	  ft_printf("            : %d\n", ft_printf("          DECIMAL: |%5d|", -42));
-		 printf("            : %d\n",    printf("          INTEIRO: |%5i|", -42));
-	  ft_printf("            : %d\n", ft_printf("          INTEIRO: |%5i|", -42));
-		printf("             : %d\n",    printf("INTEIRO SEM SINAL: |%5u|", 42));
-	 ft_printf("             : %d\n", ft_printf("INTEIRO SEM SINAL: |%5u|", 42));
-		printf("             : %d\n",    printf("  HEXADECIMAL MIN: |%5x|", 42));
-	 ft_printf("             : %d\n", ft_printf("  HEXADECIMAL MIN: |%5x|", 42));
-		printf("             : %d\n",    printf("      HEXADECIMAL: |%5X|", 42));
-	 ft_printf("             : %d\n", ft_printf("      HEXADECIMAL: |%5X|", 42));
-	   printf("                : %d\n",    printf("         PORCENTO: |%5%|"));
-	ft_printf("                : %d\n", ft_printf("         PORCENTO: |%5%|"));
+		printf("           : %d\n",    printf("           STRING: |%5s|", "ABCDEF"));
+	 ft_printf("           : %d\n", ft_printf("           STRING: |%5s|", "ABCDEF"));
+				printf("   : %d\n",    printf("          POINTER: |%5p|", &pointer));
+			 ft_printf("   : %d\n", ft_printf("          POINTER: |%5p|", &pointer));
+	   printf("            : %d\n",    printf("          DECIMAL: |%5d|", -42));
+    ft_printf("            : %d\n", ft_printf("          DECIMAL: |%5d|", -42));
+	   printf("            : %d\n",    printf("          INTEIRO: |%5i|", -42));
+    ft_printf("            : %d\n", ft_printf("          INTEIRO: |%5i|", -42));
+       printf("            : %d\n",    printf("INTEIRO SEM SINAL: |%5u|", 42));
+    ft_printf("            : %d\n", ft_printf("INTEIRO SEM SINAL: |%5u|", 42));
+       printf("            : %d\n",    printf("  HEXADECIMAL MIN: |%5x|", 42));
+    ft_printf("            : %d\n", ft_printf("  HEXADECIMAL MIN: |%5x|", 42));
+       printf("            : %d\n",    printf("      HEXADECIMAL: |%5X|", 42));
+    ft_printf("            : %d\n", ft_printf("      HEXADECIMAL: |%5X|", 42));
 }
