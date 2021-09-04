@@ -6,16 +6,21 @@
 #define HAS_HASHTAG_FLAG(f) f&(1<<0)
 #define HAS_SPACE_FLAG(f) f&(1<<1)
 #define HAS_PLUS_FLAG(f) f&(1<<2)
-#define HAS_ZERO_FLAG(f) f&(1<<3)
+#define HAS_MINUS_FLAG(f) f&(1<<3)
+#define HAS_ZERO_FLAG(f) f&(1<<4)
 
 int ft_print_char(char c, int *formaters)
 {
 	int	width;
 
 	width = 0;
-	while (++width < formaters[1])
-		write(1, " ", 1);
+	if (!(HAS_MINUS_FLAG(formaters[0])))
+		while (++width < formaters[1])
+			write(1, " ", 1);
 	write(1, &c, 1);
+	if (HAS_MINUS_FLAG(formaters[0]))
+		while (++width < formaters[1])
+			write(1, " ", 1);
 	return (width);
 }
 
@@ -28,9 +33,13 @@ int ft_print_string(char *string, int *formaters)
 	while (string[chars])
 		chars++;
 	width = -1;
-	while (++width + chars < formaters[1])
-		write(1, " ", 1);
+	if (!(HAS_MINUS_FLAG(formaters[0])))
+		while (++width + chars < formaters[1])
+			write(1, " ", 1);
 	write(1, string++, chars);
+	if (HAS_MINUS_FLAG(formaters[0]))
+		while (++width + chars < formaters[1])
+			write(1, " ", 1);
 	return (width + chars);
 }
 
@@ -68,9 +77,20 @@ int ft_print_unsigned_int(size_t number, int *formaters)
 		chars++;
 	}
 	width = -1;
-	while (++width + chars < formaters[1])
-		write(1, " ", 1);
-	return (width + ft_print_unsigned_int_aux(number));
+	if (!(HAS_MINUS_FLAG(formaters[0])))
+	{
+		if (!(HAS_ZERO_FLAG(formaters[0])))
+			while (++width + chars < formaters[1])
+				write(1, " ", 1);
+		if (HAS_ZERO_FLAG(formaters[0]))
+			while (++width + chars < formaters[1])
+				write(1, "0", 1);
+	}
+	ft_print_unsigned_int_aux(number);
+	if (HAS_MINUS_FLAG(formaters[0]))
+		while (++width + chars < formaters[1])
+			write(1, " ", 1);
+	return (width + chars);
 }
 
 int ft_print_int(int number, int *formaters)
@@ -87,12 +107,22 @@ int ft_print_int(int number, int *formaters)
 		chars++;
 	}
 	width = -1;
-	while (++width + chars < formaters[1])
-		write(1, " ", 1);
+	if (!(HAS_MINUS_FLAG(formaters[0])))
+	{
+		if (!(HAS_ZERO_FLAG(formaters[0])))
+			while (++width + chars < formaters[1])
+				write(1, " ", 1);
+		if (number < 0)
+			write(1, "-", 1);
+		if (HAS_ZERO_FLAG(formaters[0]))
+			while (++width + chars < formaters[1])
+				write(1, "0", 1);
+	}
+	else
+		if (number < 0)
+			write(1, "-", 1);
 	if (number < 0)
 	{
-		write(1, "-", 1);
-		width++;
 		if (number == -2147483648)
 		{
 			width++;
@@ -101,7 +131,11 @@ int ft_print_int(int number, int *formaters)
 		}
 		number *= -1;
 	}
-	return (width + ft_print_unsigned_int_aux(number));
+	ft_print_unsigned_int_aux(number);
+	if (HAS_MINUS_FLAG(formaters[0]))
+		while (++width + chars < formaters[1])
+			write(1, " ", 1);
+	return (width + chars);
 }
 
 int ft_print_hexadecimal_aux(size_t number, char *base)
@@ -138,9 +172,20 @@ int ft_print_hexadecimal(size_t number, char *base, int *formaters)
 		chars++;
 	}
 	width = -1;
-	while (++width + chars < formaters[1])
-		write(1, " ", 1);
-	return (width + ft_print_hexadecimal_aux(number, base));
+	if (!(HAS_MINUS_FLAG(formaters[0])))
+	{
+		if (!(HAS_ZERO_FLAG(formaters[0])))
+			while (++width + chars < formaters[1])
+				write(1, " ", 1);
+		if (HAS_ZERO_FLAG(formaters[0]))
+			while (++width + chars < formaters[1])
+				write(1, "0", 1);
+	}
+	ft_print_hexadecimal_aux(number, base);
+	if (HAS_MINUS_FLAG(formaters[0]))
+		while (++width + chars < formaters[1])
+			write(1, " ", 1);
+	return (width + chars);
 }
 
 int ft_print_pointer(void *pointer, int *formaters)
@@ -157,10 +202,23 @@ int ft_print_pointer(void *pointer, int *formaters)
 		chars++;
 	}
 	width = 1;
-	while (++width + chars < formaters[1])
-		write(1, " ", 1);
-	write(1, "0x", 2);
-	return (width + ft_print_hexadecimal_aux((size_t) pointer, "0123456789abcdef"));
+	if (!(HAS_MINUS_FLAG(formaters[0])))
+	{
+		if (!(HAS_ZERO_FLAG(formaters[0])))
+			while (++width + chars < formaters[1])
+				write(1, " ", 1);
+		write(1, "0x", 2);
+		if (HAS_ZERO_FLAG(formaters[0]))
+			while (++width + chars < formaters[1])
+				write(1, "0", 1);
+	}
+	else
+		write(1, "0x", 2);
+	ft_print_hexadecimal_aux((size_t) pointer, "0123456789abcdef");
+	if (HAS_MINUS_FLAG(formaters[0]))
+		while (++width + chars < formaters[1])
+			write(1, " ", 1);
+	return (width + chars);
 }
 
 int ft_print_percent()
@@ -213,7 +271,8 @@ int	ft_formaters_flags(char **string)
 		if (flags & (1 << pos))
 			return (-1);
 		flags = flags | (1 << pos);
-		pos = ft_strpos(FLAGS, *(*string)++);
+		(*string)++;
+		pos = ft_strpos(FLAGS, **string);
 	}
 	return (flags);
 }
@@ -242,9 +301,9 @@ int	ft_formaters_precision(char **string)
 
 int *ft_formaters(char **string, int *formaters)
 {
-	// printf("ft_formaters1: %c %d %d %d\n", **string, formaters[0], formaters[1], formaters[2]);
+	// printf("\nft_formaters1: %c\n", **string);
 	formaters[0] = ft_formaters_flags(string);
-	// printf("ft_formaters2: %c %d %d %d\n", **string, formaters[0], formaters[1], formaters[2]);
+	// printf("ft_formaters2: %d %d %d\n", formaters[0], formaters[1], formaters[2]);
 	formaters[1] = ft_formaters_width(string);
 	// printf("ft_formaters3: %c %d %d %d\n", **string, formaters[0], formaters[1], formaters[2]);
 	formaters[2] = ft_formaters_precision(string);
@@ -289,6 +348,8 @@ int main(void)
 	char pointer = 'A';
 	   printf("                : %d\n",    printf("             CHAR: |%c|", 'A'));
 	ft_printf("                : %d\n", ft_printf("             CHAR: |%c|", 'A'));
+		 printf("              : %d\n",    printf("           STRING: |%s|", "ABC"));
+	  ft_printf("              : %d\n", ft_printf("           STRING: |%s|", "ABC"));
 			printf("           : %d\n",    printf("           STRING: |%s|", "ABCDEF"));
 		 ft_printf("           : %d\n", ft_printf("           STRING: |%s|", "ABCDEF"));
 					printf("   : %d\n",    printf("          POINTER: |%p|", &pointer));
@@ -308,6 +369,8 @@ int main(void)
 
 	   printf("            : %d\n",    printf("             CHAR: |%5c|", 'A'));
 	ft_printf("            : %d\n", ft_printf("             CHAR: |%5c|", 'A'));
+	   printf("            : %d\n",    printf("           STRING: |%5s|", "ABC"));
+	ft_printf("            : %d\n", ft_printf("           STRING: |%5s|", "ABC"));
 		printf("           : %d\n",    printf("           STRING: |%5s|", "ABCDEF"));
 	 ft_printf("           : %d\n", ft_printf("           STRING: |%5s|", "ABCDEF"));
 				printf("   : %d\n",    printf("          POINTER: |%5p|", &pointer));
@@ -322,4 +385,42 @@ int main(void)
     ft_printf("            : %d\n", ft_printf("  HEXADECIMAL MIN: |%5x|", 42));
        printf("            : %d\n",    printf("      HEXADECIMAL: |%5X|", 42));
     ft_printf("            : %d\n", ft_printf("      HEXADECIMAL: |%5X|", 42));
+
+	   printf("            : %d\n",    printf("             CHAR: |%05c|", 'A'));
+	ft_printf("            : %d\n", ft_printf("             CHAR: |%05c|", 'A'));
+	   printf("            : %d\n",    printf("           STRING: |%05s|", "ABC"));
+	ft_printf("            : %d\n", ft_printf("           STRING: |%05s|", "ABC"));
+		printf("           : %d\n",    printf("           STRING: |%05s|", "ABCDEF"));
+	 ft_printf("           : %d\n", ft_printf("           STRING: |%05s|", "ABCDEF"));
+				printf("   : %d\n",    printf("          POINTER: |%05p|", &pointer));
+			 ft_printf("   : %d\n", ft_printf("          POINTER: |%05p|", &pointer));
+	   printf("            : %d\n",    printf("          DECIMAL: |%05d|", -42));
+    ft_printf("            : %d\n", ft_printf("          DECIMAL: |%05d|", -42));
+	   printf("            : %d\n",    printf("          INTEIRO: |%05i|", -42));
+    ft_printf("            : %d\n", ft_printf("          INTEIRO: |%05i|", -42));
+       printf("            : %d\n",    printf("INTEIRO SEM SINAL: |%05u|", 42));
+    ft_printf("            : %d\n", ft_printf("INTEIRO SEM SINAL: |%05u|", 42));
+       printf("            : %d\n",    printf("  HEXADECIMAL MIN: |%05x|", 42));
+    ft_printf("            : %d\n", ft_printf("  HEXADECIMAL MIN: |%05x|", 42));
+       printf("            : %d\n",    printf("      HEXADECIMAL: |%05X|", 42));
+    ft_printf("            : %d\n", ft_printf("      HEXADECIMAL: |%05X|", 42));
+
+	   printf("            : %d\n",    printf("             CHAR: |%-5c|", 'A'));
+	ft_printf("            : %d\n", ft_printf("             CHAR: |%-5c|", 'A'));
+	   printf("            : %d\n",    printf("           STRING: |%-5s|", "ABC"));
+	ft_printf("            : %d\n", ft_printf("           STRING: |%-5s|", "ABC"));
+		printf("           : %d\n",    printf("           STRING: |%-5s|", "ABCDEF"));
+	 ft_printf("           : %d\n", ft_printf("           STRING: |%-5s|", "ABCDEF"));
+				printf("   : %d\n",    printf("          POINTER: |%-5p|", &pointer));
+			 ft_printf("   : %d\n", ft_printf("          POINTER: |%-5p|", &pointer));
+	   printf("            : %d\n",    printf("          DECIMAL: |%-5d|", -42));
+    ft_printf("            : %d\n", ft_printf("          DECIMAL: |%-5d|", -42));
+	   printf("            : %d\n",    printf("          INTEIRO: |%-5i|", -42));
+    ft_printf("            : %d\n", ft_printf("          INTEIRO: |%-5i|", -42));
+       printf("            : %d\n",    printf("INTEIRO SEM SINAL: |%-5u|", 42));
+    ft_printf("            : %d\n", ft_printf("INTEIRO SEM SINAL: |%-5u|", 42));
+       printf("            : %d\n",    printf("  HEXADECIMAL MIN: |%-5x|", 42));
+    ft_printf("            : %d\n", ft_printf("  HEXADECIMAL MIN: |%-5x|", 42));
+       printf("            : %d\n",    printf("      HEXADECIMAL: |%-5X|", 42));
+    ft_printf("            : %d\n", ft_printf("      HEXADECIMAL: |%-5X|", 42));
 }
