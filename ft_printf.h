@@ -15,12 +15,28 @@
 # include <stdarg.h>
 # include <unistd.h>
 
-# define FLAGS					"# +-0"
-# define HAS_HASHTAG_FLAG(f)	f&(1<<0)
-# define HAS_SPACE_FLAG(f)		f&(1<<1)
-# define HAS_PLUS_FLAG(f)		f&(1<<2)
-# define HAS_MINUS_FLAG(f)		f&(1<<3)
-# define HAS_ZERO_FLAG(f)		f&(1<<4)
+# define FLAGS  "# +-0"
+# define HEX_LOWER  "0123456789abcdef"
+# define HEX_UPPER  "0123456789ABCDEF"
+
+int	ft_has_hashtag_flag(int flags);
+int	ft_has_space_flag(int flags);
+int	ft_has_plus_flag(int flags);
+int	ft_has_minus_flag(int flags);
+int	ft_has_zero_flag(int flags);
+
+int	ft_put_n_char(char c, size_t n);
+int	ft_print_unsigned_int_aux(size_t number);
+int	ft_print_hexadecimal_aux(size_t number, char *base);
+
+int	ft_print_char(char c, int *formaters);
+int	ft_print_string(char *string, int *formaters);
+int	ft_print_int(long long number, int *formaters);
+int	ft_print_pointer(void *pointer, int *formaters);
+int	ft_print_unsigned_int(unsigned int number, int *formaters);
+int	ft_print_hexadecimal(unsigned int number, char *base, int *formaters);
+
+int	*ft_formaters(char **string, int *formaters);
 
 int	ft_printf(const char *string, ...);
 
