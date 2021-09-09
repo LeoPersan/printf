@@ -17,18 +17,22 @@ int	ft_print_string(char *string, int *formaters)
 	int	chars;
 	int	width;
 
-	if (!string)
-		return (write(1, "(null)", 6));
 	chars = 0;
-	while (string[chars])
-		chars++;
+	if (!string)
+		chars = 6;
+	else
+		while (string && string[chars])
+			chars++;
 	width = 0;
 	if (formaters[2] > -1 && chars > formaters[2])
 		chars = formaters[2];
-	if (!ft_has_minus_flag(formaters[0]) && width + chars < formaters[1])
+	if (!ft_has_minus_flag(formaters[0]))
 		width += ft_put_n_char(' ', formaters[1] - width - chars);
-	write(1, string, chars);
-	if (ft_has_minus_flag(formaters[0]) && width + chars < formaters[1])
+	if (!string)
+		write(1, "(null)", chars);
+	else
+		write(1, string, chars);
+	if (ft_has_minus_flag(formaters[0]))
 		width += ft_put_n_char(' ', formaters[1] - width - chars);
 	return (width + chars);
 }

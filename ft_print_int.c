@@ -15,53 +15,46 @@
 int	ft_print_int(long long number, int *formaters)
 {
 	int			chars;
-	int			width;
 	int			numbers;
 	long long	number_aux;
 
-	chars = (number < 0 || ft_has_plus_flag(formaters[0]));
-	numbers = 0;
+	chars = -1;
 	number_aux = number;
-	while (!numbers || number_aux)
-	{
+	while (!(++chars) || number_aux)
 		number_aux /= 10;
+	numbers = chars;
+	if (formaters[2] > chars)
+		chars = formaters[2];
+	if (number < 0 || ft_has_plus_flag(formaters[0]))
 		chars++;
-		numbers++;
-	}
-	width = 0;
-	if (!(ft_has_minus_flag(formaters[0])))
+	else if (ft_has_space_flag(formaters[0]) && formaters[1] < 1)
+		formaters[1] = chars + 1;
+	if (!ft_has_minus_flag(formaters[0]))
 	{
-		if (formaters[2] > -1 && formaters[2] + numbers < formaters[1])
-			formaters[1] -= formaters[2] - numbers;
-		if (!ft_has_zero_flag(formaters[0]) && width + chars < formaters[1])
-			width += ft_put_n_char(' ', formaters[1] - width - chars);
-		if (ft_has_space_flag(formaters[0])
-			&& !formaters[1] && chars == numbers)
-		{
-			write(1, " ", 1);
-			chars++;
-			numbers++;
-		}
+		if (!ft_has_zero_flag(formaters[0]) || formaters[2] > -1)
+			chars += ft_put_n_char(' ', formaters[1] - chars);
 		if (number < 0)
 			write(1, "-", 1);
 		else if (ft_has_plus_flag(formaters[0]))
 			write(1, "+", 1);
-		if (ft_has_zero_flag(formaters[0]) && width + chars < formaters[1])
-			width += ft_put_n_char('0', formaters[1] - width - chars);
-		while (formaters[2] > -1 && numbers < formaters[2])
-		{
-			write(1, "0", 1);
-			chars++;
-			numbers++;
-		}
 	}
-	else
-		if (number < 0)
-			write(1, "-", 1);
+	else if (number < 0)
+		write(1, "-", 1);
 	if (number < 0)
 		number *= -1;
-	ft_print_unsigned_int_aux(number);
-	if (ft_has_minus_flag(formaters[0]) && width + chars < formaters[1])
-		width += ft_put_n_char(' ', formaters[1] - width - chars);
-	return (width + chars);
+	if (ft_has_zero_flag(formaters[0]) && formaters[2] < 0)
+		chars += ft_put_n_char('0', formaters[1] - chars);
+	ft_put_n_char('0', formaters[2] - numbers);
+	if (!number && formaters[2] == 0)
+	{
+		if (formaters[1] > 0)
+			write(1, " ", 1);
+		else
+			chars--;
+	}
+	else
+		ft_print_unsigned_int_aux(number);
+	if (ft_has_minus_flag(formaters[0]))
+		chars += ft_put_n_char(' ', formaters[1] - chars);
+	return (chars);
 }
