@@ -32,8 +32,6 @@ static int	ft_formaters_flags(char **string)
 	pos = ft_strpos(FLAGS, **string);
 	while (**string && pos > -1)
 	{
-		if (flags & (1 << pos))
-			return (-1);
 		flags = flags | (1 << pos);
 		(*string)++;
 		pos = ft_strpos(FLAGS, **string);
