@@ -25,7 +25,7 @@ int	ft_has_plus_flag(int flags);
 int	ft_has_minus_flag(int flags);
 int	ft_has_zero_flag(int flags);
 
-int	ft_put_n_char(char c, size_t n);
+int	ft_put_n_char(char c, int n);
 int	ft_print_unsigned_int_aux(size_t number);
 int	ft_print_hexadecimal_aux(size_t number, char *base);
 

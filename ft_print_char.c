@@ -17,10 +17,10 @@ int	ft_print_char(char c, int *formaters)
 	int	width;
 
 	width = 1;
-	if (!ft_has_minus_flag(formaters[0]) && formaters[1] > width)
+	if (!ft_has_minus_flag(formaters[0]))
 		width += ft_put_n_char(' ', formaters[1] - width);
 	write(1, &c, 1);
-	if (ft_has_minus_flag(formaters[0]) && formaters[1] > width)
+	if (ft_has_minus_flag(formaters[0]))
 		width += ft_put_n_char(' ', formaters[1] - width);
 	return (width);
 }

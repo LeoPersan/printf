@@ -12,14 +12,14 @@
 
 #include "ft_printf.h"
 
-int	ft_put_n_char(char c, size_t n)
+int	ft_put_n_char(char c, int n)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
 	while (i++ < n)
 		write(1, &c, 1);
-	return (n);
+	return (i - 1);
 }
 
 int	ft_print_unsigned_int_aux(size_t number)
