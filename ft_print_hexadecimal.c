@@ -6,47 +6,60 @@
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/07 17:46:49 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/07 17:46:49 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/18 16:41:47 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_print_hex_prefix(unsigned int number, char *base, int flags)
+static int	ft_print_hex_prefix(unsigned int number, char *base, int flags)
 {
 	if (!ft_has_hashtag_flag(flags) || !number)
-		return ;
+		return (0);
 	if (base[10] == 'A')
-		write(1, "0X", 2);
-	else
-		write(1, "0x", 2);
+		return (write(1, "0X", 2));
+	return (write(1, "0x", 2));
+}
+
+static int	before_prefix(int *formaters, int chars, unsigned int number)
+{
+	if (ft_has_hashtag_flag(formaters[0]) && number)
+		chars += 2;
+	if (!ft_has_minus_flag(formaters[0])
+		&& (!ft_has_zero_flag(formaters[0]) || formaters[2] > -1))
+		return (ft_put_n_char(' ', formaters[1] - chars));
+	return (0);
+}
+
+static int	after_prefix(int *formaters, int chars)
+{
+	if (!ft_has_minus_flag(formaters[0]) && ft_has_zero_flag(formaters[0]))
+		return (ft_put_n_char('0', formaters[1] - chars));
+	return (0);
+}
+
+static int	count_chars(unsigned int number)
+{
+	int	chars;
+
+	chars = -1;
+	while (!(++chars) || number)
+		number /= 16;
+	return (chars);
 }
 
 int	ft_print_hexadecimal(unsigned int number, char *base, int *formaters)
 {
-	int				chars;
-	int				numbers;
-	unsigned int	number_aux;
+	int	chars;
+	int	numbers;
 
-	chars = -1;
-	number_aux = number;
-	while (!(++chars) || number_aux)
-		number_aux /= 16;
+	chars = count_chars(number);
 	numbers = chars;
 	if (formaters[2] > chars)
 		chars = formaters[2];
-	if (ft_has_hashtag_flag(formaters[0]) && number)
-		chars += 2;
-	if (!ft_has_minus_flag(formaters[0]))
-	{
-		if (!ft_has_zero_flag(formaters[0]) || formaters[2] > -1)
-			chars += ft_put_n_char(' ', formaters[1] - chars);
-		ft_print_hex_prefix(number, base, formaters[0]);
-		if (ft_has_zero_flag(formaters[0]) || formaters[2] < 0)
-			chars += ft_put_n_char('0', formaters[1] - chars);
-	}
-	else
-		ft_print_hex_prefix(number, base, formaters[0]);
+	chars += before_prefix(formaters, chars, number);
+	chars += ft_print_hex_prefix(number, base, formaters[0]);
+	chars += after_prefix(formaters, chars);
 	ft_put_n_char('0', formaters[2] - numbers);
 	if (!number && formaters[2] == 0)
 	{
