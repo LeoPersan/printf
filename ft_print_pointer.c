@@ -6,48 +6,41 @@
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/07 17:48:47 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/18 16:44:47 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/21 08:18:33 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	before_prefix(int *formaters, int chars)
+static t_formater	*calc_formaters(size_t pointer, t_formater *formaters)
 {
-	if (!ft_has_minus_flag(formaters[0]) && !ft_has_zero_flag(formaters[0]))
-		return (ft_put_n_char(' ', formaters[1] - chars));
-	return (0);
+	size_t	number_aux;
+
+	number_aux = pointer;
+	formaters->chars = -1;
+	while (!(++formaters->chars) || number_aux)
+		number_aux /= 16;
+	formaters->prefix = 2;
+	number_aux = formaters->width - formaters->chars - formaters->prefix;
+	if (ft_has_zero_flag(formaters->flags))
+		formaters->before_zeros = number_aux;
+	else if (ft_has_minus_flag(formaters->flags))
+		formaters->after_spaces = number_aux;
+	else
+		formaters->before_spaces = number_aux;
+	return (formaters);
 }
 
-static int	after_prefix(int *formaters, int chars)
+int	ft_print_pointer(void *pointer, t_formater *formaters)
 {
-	if (!ft_has_minus_flag(formaters[0]) && ft_has_zero_flag(formaters[0]))
-		return (ft_put_n_char('0', formaters[1] - chars));
-	return (0);
-}
+	int	width;
 
-static int	count_chars(size_t address)
-{
-	int	chars;
-
-	if (!address)
-		return (3);
-	chars = 1;
-	while (++chars && address)
-		address /= 16;
-	return (chars);
-}
-
-int	ft_print_pointer(void *pointer, int *formaters)
-{
-	int		chars;
-
-	chars = count_chars((size_t) pointer);
-	chars += before_prefix(formaters, chars);
-	write(1, "0x", 2);
-	chars += after_prefix(formaters, chars);
-	ft_print_hexadecimal_aux((size_t) pointer, HEX_LOWER);
-	if (ft_has_minus_flag(formaters[0]))
-		chars += ft_put_n_char(' ', formaters[1] - chars);
-	return (chars);
+	width = 0;
+	formaters = calc_formaters((size_t) pointer, formaters);
+	width += ft_put_n_char(' ', formaters->before_spaces);
+	width += write(1, "0x", 2);
+	width += ft_put_n_char('0', formaters->before_zeros);
+	width += ft_print_hexadecimal_aux((size_t) pointer, HEX_LOWER);
+	width += ft_put_n_char(' ', formaters->after_spaces);
+	return (width);
 }

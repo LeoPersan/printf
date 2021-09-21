@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libftprintf.h                                      :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/04 20:33:54 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/04 20:33:54 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/18 18:50:53 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,44 @@
 # define FT_PRINTF_H
 # include <stdarg.h>
 # include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
 
 # define FLAGS  "# +-0"
 # define HEX_LOWER  "0123456789abcdef"
 # define HEX_UPPER  "0123456789ABCDEF"
 
-int	ft_has_hashtag_flag(int flags);
-int	ft_has_space_flag(int flags);
-int	ft_has_plus_flag(int flags);
-int	ft_has_minus_flag(int flags);
-int	ft_has_zero_flag(int flags);
+typedef struct	s_formater
+{
+	int	flags;
+	int	width;
+	int	precision;
+	int	prefix;
+	int	chars;
+	int	before_spaces;
+	int	after_spaces;
+	int	before_zeros;
+}	t_formater;
 
-int	ft_put_n_char(char c, int n);
-int	ft_print_unsigned_int_aux(size_t number);
-int	ft_print_hexadecimal_aux(size_t number, char *base);
+int			ft_has_hashtag_flag(int flags);
+int			ft_has_space_flag(int flags);
+int			ft_has_plus_flag(int flags);
+int			ft_has_minus_flag(int flags);
+int			ft_has_zero_flag(int flags);
 
-int	ft_print_char(char c, int *formaters);
-int	ft_print_string(char *string, int *formaters);
-int	ft_print_int(long long number, int *formaters);
-int	ft_print_pointer(void *pointer, int *formaters);
-int	ft_print_unsigned_int(unsigned int number, int *formaters);
-int	ft_print_hexadecimal(unsigned int number, char *base, int *formaters);
+int			ft_put_n_char(char c, int n);
+int			ft_print_unsigned_int_aux(size_t number);
+int			ft_print_hexadecimal_aux(size_t number, char *base);
 
-int	*ft_formaters(char **string, int *formaters);
+int			ft_print_char(char c, t_formater *formaters);
+int			ft_print_string(char *string, t_formater *formaters);
+int			ft_print_int(long long number, t_formater *formaters);
+int			ft_print_pointer(void *pointer, t_formater *formaters);
+int			ft_print_unsigned_int(unsigned int number, t_formater *formaters);
+int			ft_print_hexadecimal(unsigned int number, char *base, t_formater *formaters);
 
-int	ft_printf(const char *string, ...);
+t_formater	*ft_formaters(char **string, t_formater *formaters);
+
+int			ft_printf(const char *string, ...);
 
 #endif

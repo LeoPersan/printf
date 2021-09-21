@@ -6,33 +6,39 @@
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/07 17:49:03 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/07 17:49:03 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/18 18:35:59 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_print_string(char *string, int *formaters)
+static t_formater	*calc_formaters(char *string, t_formater *formaters)
 {
-	int	chars;
+	if (!string)
+		formaters->chars = 6;
+	else
+		while (string[formaters->chars])
+			formaters->chars++;
+	if (formaters->precision > -1 && formaters->chars > formaters->precision)
+		formaters->chars = formaters->precision;
+	if (ft_has_minus_flag(formaters->flags))
+		formaters->after_spaces = formaters->width - formaters->chars;
+	else
+		formaters->before_spaces = formaters->width - formaters->chars;
+	return (formaters);
+}
+
+int	ft_print_string(char *string, t_formater *formaters)
+{
 	int	width;
 
-	chars = 0;
-	if (!string)
-		chars = 6;
-	else
-		while (string && string[chars])
-			chars++;
 	width = 0;
-	if (formaters[2] > -1 && chars > formaters[2])
-		chars = formaters[2];
-	if (!ft_has_minus_flag(formaters[0]))
-		width += ft_put_n_char(' ', formaters[1] - width - chars);
+	formaters = calc_formaters(string, formaters);
+	width += ft_put_n_char(' ', formaters->before_spaces);
 	if (!string)
-		write(1, "(null)", chars);
+		width += write(1, "(null)", formaters->chars);
 	else
-		write(1, string, chars);
-	if (ft_has_minus_flag(formaters[0]))
-		width += ft_put_n_char(' ', formaters[1] - width - chars);
-	return (width + chars);
+		width += write(1, string, formaters->chars);
+	width += ft_put_n_char(' ', formaters->after_spaces);
+	return (width);
 }

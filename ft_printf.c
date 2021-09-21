@@ -6,13 +6,13 @@
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/07 17:50:36 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/07 17:50:36 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/18 18:28:39 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	ft_conversors(char *string, va_list args, int *formaters)
+static int	ft_conversors(char *string, va_list args, t_formater *formaters)
 {
 	if (*string == 'c')
 		return (ft_print_char(va_arg(args, int), formaters));
@@ -33,18 +33,26 @@ static int	ft_conversors(char *string, va_list args, int *formaters)
 	return (0);
 }
 
-static int	ft_print_var(char **string, va_list args)
+static int	ft_print_var(char **string, va_list args, t_formater *formaters)
 {
-	int	formaters[3];
-
+	formaters->flags = 0;
+	formaters->width = -1;
+	formaters->precision = -1;
+	formaters->prefix = 0;
+	formaters->chars = 0;
+	formaters->before_spaces = 0;
+	formaters->after_spaces = 0;
+	formaters->before_zeros = 0;
 	return (ft_conversors(*string, args, ft_formaters(string, formaters)));
 }
 
 int	ft_printf(const char *string, ...)
 {
-	int		chars;
-	va_list	args;
+	int			chars;
+	va_list		args;
+	t_formater	*formaters;
 
+	formaters = malloc(sizeof(t_formater));
 	chars = 0;
 	va_start(args, string);
 	while (*string)
@@ -52,7 +60,7 @@ int	ft_printf(const char *string, ...)
 		if (*string == '%')
 		{
 			string++;
-			chars += ft_print_var((char **)&string, args);
+			chars += ft_print_var((char **)&string, args, formaters);
 		}
 		else
 		{
@@ -62,5 +70,6 @@ int	ft_printf(const char *string, ...)
 		string++;
 	}
 	va_end(args);
+	free(formaters);
 	return (chars);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
+/*   ft_printf_get_formaters.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/07 17:45:49 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/07 17:45:49 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/18 17:33:41 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ static int	ft_formaters_precision(char **string)
 	return (precision);
 }
 
-int	*ft_formaters(char **string, int *formaters)
+t_formater	*ft_formaters(char **string, t_formater *formaters)
 {
-	formaters[0] = ft_formaters_flags(string);
-	formaters[1] = ft_formaters_width(string);
-	formaters[2] = ft_formaters_precision(string);
+	formaters->flags = ft_formaters_flags(string);
+	formaters->width = ft_formaters_width(string);
+	formaters->precision = ft_formaters_precision(string);
 	return (formaters);
 }
