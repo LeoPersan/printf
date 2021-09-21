@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,28 +12,28 @@
 
 #include "ft_printf.h"
 
-static int	ft_conversors(char *string, va_list args, t_formater *formaters)
+static int	conversors(char *string, va_list args, t_formater *formaters)
 {
 	if (*string == 'c')
-		return (ft_print_char(va_arg(args, int), formaters));
+		return (print_char(va_arg(args, int), formaters));
 	if (*string == 's')
-		return (ft_print_string(va_arg(args, char *), formaters));
+		return (print_string(va_arg(args, char *), formaters));
 	if (*string == 'p')
-		return (ft_print_pointer(va_arg(args, void *), formaters));
+		return (print_pointer(va_arg(args, void *), formaters));
 	if (*string == 'd' || *string == 'i')
-		return (ft_print_int(va_arg(args, int), formaters));
+		return (print_int(va_arg(args, int), formaters));
 	if (*string == 'u')
-		return (ft_print_unsigned_int(va_arg(args, size_t), formaters));
+		return (print_unsigned_int(va_arg(args, size_t), formaters));
 	if (*string == 'x')
-		return (ft_print_hexadecimal(va_arg(args, int), HEX_LOWER, formaters));
+		return (print_hexadecimal(va_arg(args, int), HEX_LOWER, formaters));
 	if (*string == 'X')
-		return (ft_print_hexadecimal(va_arg(args, int), HEX_UPPER, formaters));
+		return (print_hexadecimal(va_arg(args, int), HEX_UPPER, formaters));
 	if (*string == '%')
 		return (write(1, "%", 1));
 	return (0);
 }
 
-static int	ft_print_var(char **string, va_list args, t_formater *formaters)
+static int	print_var(char **string, va_list args, t_formater *formaters)
 {
 	formaters->flags = 0;
 	formaters->width = -1;
@@ -43,7 +43,7 @@ static int	ft_print_var(char **string, va_list args, t_formater *formaters)
 	formaters->before_spaces = 0;
 	formaters->after_spaces = 0;
 	formaters->before_zeros = 0;
-	return (ft_conversors(*string, args, ft_formaters(string, formaters)));
+	return (conversors(*string, args, ft_formaters(string, formaters)));
 }
 
 int	ft_printf(const char *string, ...)
@@ -60,7 +60,7 @@ int	ft_printf(const char *string, ...)
 		if (*string == '%')
 		{
 			string++;
-			chars += ft_print_var((char **)&string, args, formaters);
+			chars += print_var((char **)&string, args, formaters);
 		}
 		else
 		{

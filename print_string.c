@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_print_string.c                                  :+:      :+:    :+:   */
+/*   print_string.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -21,24 +21,24 @@ static t_formater	*calc_formaters(char *string, t_formater *formaters)
 			formaters->chars++;
 	if (formaters->precision > -1 && formaters->chars > formaters->precision)
 		formaters->chars = formaters->precision;
-	if (ft_has_minus_flag(formaters->flags))
+	if (has_minus_flag(formaters->flags))
 		formaters->after_spaces = formaters->width - formaters->chars;
 	else
 		formaters->before_spaces = formaters->width - formaters->chars;
 	return (formaters);
 }
 
-int	ft_print_string(char *string, t_formater *formaters)
+int	print_string(char *string, t_formater *formaters)
 {
 	int	width;
 
 	width = 0;
 	formaters = calc_formaters(string, formaters);
-	width += ft_put_n_char(' ', formaters->before_spaces);
+	width += put_n_char(' ', formaters->before_spaces);
 	if (!string)
 		width += write(1, "(null)", formaters->chars);
 	else
 		width += write(1, string, formaters->chars);
-	width += ft_put_n_char(' ', formaters->after_spaces);
+	width += put_n_char(' ', formaters->after_spaces);
 	return (width);
 }

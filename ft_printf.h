@@ -6,7 +6,7 @@
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/04 20:33:54 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/18 18:50:53 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/21 19:29:02 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,22 +33,22 @@ typedef struct	s_formater
 	int	before_zeros;
 }	t_formater;
 
-int			ft_has_hashtag_flag(int flags);
-int			ft_has_space_flag(int flags);
-int			ft_has_plus_flag(int flags);
-int			ft_has_minus_flag(int flags);
-int			ft_has_zero_flag(int flags);
+int			has_hashtag_flag(int flags);
+int			has_space_flag(int flags);
+int			has_plus_flag(int flags);
+int			has_minus_flag(int flags);
+int			has_zero_flag(int flags);
 
-int			ft_put_n_char(char c, int n);
-int			ft_print_unsigned_int_aux(size_t number);
-int			ft_print_hexadecimal_aux(size_t number, char *base);
+int			put_n_char(char c, int n);
+int			print_unsigned_int_aux(size_t number);
+int			print_hexadecimal_aux(size_t number, char *base);
 
-int			ft_print_char(char c, t_formater *formaters);
-int			ft_print_string(char *string, t_formater *formaters);
-int			ft_print_int(long long number, t_formater *formaters);
-int			ft_print_pointer(void *pointer, t_formater *formaters);
-int			ft_print_unsigned_int(unsigned int number, t_formater *formaters);
-int			ft_print_hexadecimal(unsigned int number, char *base, t_formater *formaters);
+int			print_char(char c, t_formater *formaters);
+int			print_string(char *string, t_formater *formaters);
+int			print_int(long long number, t_formater *formaters);
+int			print_pointer(void *pointer, t_formater *formaters);
+int			print_unsigned_int(unsigned int number, t_formater *formaters);
+int			print_hexadecimal(unsigned int number, char *base, t_formater *formaters);
 
 t_formater	*ft_formaters(char **string, t_formater *formaters);
 

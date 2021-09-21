@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
+/*   printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-int	ft_put_n_char(char c, int n)
+int	put_n_char(char c, int n)
 {
 	int	i;
 
@@ -22,14 +22,14 @@ int	ft_put_n_char(char c, int n)
 	return (i - 1);
 }
 
-int	ft_print_unsigned_int_aux(size_t number)
+int	print_unsigned_int_aux(size_t number)
 {
 	char	c;
 	int		chars;
 
 	if (number > 9)
 	{
-		chars = ft_print_unsigned_int_aux(number / 10);
+		chars = print_unsigned_int_aux(number / 10);
 		c = (number % 10) + '0';
 		write(1, &c, 1);
 	}
@@ -42,14 +42,14 @@ int	ft_print_unsigned_int_aux(size_t number)
 	return (1 + chars);
 }
 
-int	ft_print_hexadecimal_aux(size_t number, char *base)
+int	print_hexadecimal_aux(size_t number, char *base)
 {
 	char	c;
 	int		chars;
 
 	if (number > 15)
 	{
-		chars = ft_print_hexadecimal_aux(number / 16, base);
+		chars = print_hexadecimal_aux(number / 16, base);
 		c = base[number % 16];
 		write(1, &c, 1);
 	}

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_get_formaters.c                          :+:      :+:    :+:   */
+/*   printf_get_formaters.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-static int	ft_strpos(char *string, char c)
+static int	strpos(char *string, char c)
 {
 	int	pos;
 
@@ -23,23 +23,23 @@ static int	ft_strpos(char *string, char c)
 	return (-1);
 }
 
-static int	ft_formaters_flags(char **string)
+static int	formaters_flags(char **string)
 {
 	int	flags;
 	int	pos;
 
 	flags = 0;
-	pos = ft_strpos(FLAGS, **string);
+	pos = strpos(FLAGS, **string);
 	while (**string && pos > -1)
 	{
 		flags = flags | (1 << pos);
 		(*string)++;
-		pos = ft_strpos(FLAGS, **string);
+		pos = strpos(FLAGS, **string);
 	}
 	return (flags);
 }
 
-static int	ft_formaters_width(char **string)
+static int	formaters_width(char **string)
 {
 	int	width;
 
@@ -49,7 +49,7 @@ static int	ft_formaters_width(char **string)
 	return (width);
 }
 
-static int	ft_formaters_precision(char **string)
+static int	formaters_precision(char **string)
 {
 	int	precision;
 
@@ -65,8 +65,8 @@ static int	ft_formaters_precision(char **string)
 
 t_formater	*ft_formaters(char **string, t_formater *formaters)
 {
-	formaters->flags = ft_formaters_flags(string);
-	formaters->width = ft_formaters_width(string);
-	formaters->precision = ft_formaters_precision(string);
+	formaters->flags = formaters_flags(string);
+	formaters->width = formaters_width(string);
+	formaters->precision = formaters_precision(string);
 	return (formaters);
 }

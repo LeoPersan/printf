@@ -1,6 +1,6 @@
 NAME =		libftprintf.a
-SOURCES =	ft_printf.c ft_print_char.c  ft_print_hexadecimal.c  ft_print_int.c \
-			ft_print_pointer.c  ft_print_string.c  ft_print_unsigned_int.c \
+SOURCES =	ft_printf.c print_char.c  print_hexadecimal.c  print_int.c \
+			print_pointer.c  print_string.c  print_unsigned_int.c \
 			ft_printf_utils.c ft_printf_check_flags.c ft_printf_get_formaters.c
 OBJECTS =	${SOURCES:.c=.o}
 CFLAGS =	-Wall -Werror -Wextra
