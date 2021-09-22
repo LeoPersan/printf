@@ -38,8 +38,7 @@ int	print_pointer(void *pointer, t_formater *formaters)
 	width = 0;
 	formaters = calc_formaters((size_t) pointer, formaters);
 	width += put_n_char(' ', formaters->before_spaces);
-	if (pointer)
-		width += write(1, "0x", 2);
+	width += write(1, "0x", 2);
 	width += put_n_char('0', formaters->before_zeros);
 	width += print_hexadecimal_aux((size_t) pointer, HEX_LOWER);
 	width += put_n_char(' ', formaters->after_spaces);
