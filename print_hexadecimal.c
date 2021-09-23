@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-static int	print_hex_prefix(unsigned int number, char *base, int flags)
+static int	print_hex_prefix(t_uint number, char *base, int flags)
 {
 	if (!has_hashtag_flag(flags) || !number)
 		return (0);
@@ -21,7 +21,7 @@ static int	print_hex_prefix(unsigned int number, char *base, int flags)
 	return (write(1, "0x", 2));
 }
 
-static t_formater	*calc_formaters(unsigned int number, t_formater *formaters)
+static t_formater	*calc_formaters(t_uint number, t_formater *formaters)
 {
 	size_t	number_aux;
 
@@ -48,7 +48,7 @@ static t_formater	*calc_formaters(unsigned int number, t_formater *formaters)
 	return (formaters);
 }
 
-int	print_hexadecimal(unsigned int number, char *base, t_formater *formaters)
+int	print_hexadecimal(t_uint number, char *base, t_formater *formaters)
 {
 	int	width;
 

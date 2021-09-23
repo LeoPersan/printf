@@ -23,11 +23,11 @@ static int	conversors(char *string, va_list args, t_formater *formaters)
 	if (*string == 'd' || *string == 'i')
 		return (print_int(va_arg(args, int), formaters));
 	if (*string == 'u')
-		return (print_unsigned_int(va_arg(args, size_t), formaters));
+		return (print_unsigned_int(va_arg(args, t_uint), formaters));
 	if (*string == 'x')
-		return (print_hexadecimal(va_arg(args, int), HEX_LOWER, formaters));
+		return (print_hexadecimal(va_arg(args, t_uint), HEX_LOWER, formaters));
 	if (*string == 'X')
-		return (print_hexadecimal(va_arg(args, int), HEX_UPPER, formaters));
+		return (print_hexadecimal(va_arg(args, t_uint), HEX_UPPER, formaters));
 	if (*string == '%')
 		return (write(1, "%", 1));
 	return (0);
@@ -43,7 +43,8 @@ static int	print_var(char **string, va_list args, t_formater *formaters)
 	formaters->before_spaces = 0;
 	formaters->after_spaces = 0;
 	formaters->before_zeros = 0;
-	return (conversors(*string, args, ft_formaters(string, formaters)));
+	formaters = ft_formaters(string, formaters);
+	return (conversors(*string, args, formaters));
 }
 
 int	ft_printf(const char *string, ...)

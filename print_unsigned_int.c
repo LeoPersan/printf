@@ -15,7 +15,7 @@
 static t_formater	*calc_formaters(long long number, t_formater *formaters)
 {
 	long long	number_aux;
-	
+
 	number_aux = number;
 	formaters->chars = -1;
 	while (!(++formaters->chars) || number_aux)
@@ -33,7 +33,7 @@ static t_formater	*calc_formaters(long long number, t_formater *formaters)
 	return (formaters);
 }
 
-int	print_unsigned_int(unsigned int number, t_formater *formaters)
+int	print_unsigned_int(t_uint number, t_formater *formaters)
 {
 	int	width;
 

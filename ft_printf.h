@@ -6,7 +6,7 @@
 /*   By: leoperei <leopso1990@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/04 20:33:54 by leoperei          #+#    #+#             */
-/*   Updated: 2021/09/21 19:29:02 by leoperei         ###   ########.fr       */
+/*   Updated: 2021/09/22 20:52:11 by leoperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,12 @@
 # include <stdlib.h>
 # include <stdio.h>
 
-# define FLAGS  "# +-0"
-# define HEX_LOWER  "0123456789abcdef"
-# define HEX_UPPER  "0123456789ABCDEF"
+# define FLAGS		"# +-0"
+# define HEX_LOWER	"0123456789abcdef"
+# define HEX_UPPER	"0123456789ABCDEF"
 
-typedef struct	s_formater
+typedef unsigned int	t_uint;
+typedef struct s_formater
 {
 	int	flags;
 	int	width;
@@ -47,8 +48,8 @@ int			print_char(char c, t_formater *formaters);
 int			print_string(char *string, t_formater *formaters);
 int			print_int(long long number, t_formater *formaters);
 int			print_pointer(void *pointer, t_formater *formaters);
-int			print_unsigned_int(unsigned int number, t_formater *formaters);
-int			print_hexadecimal(unsigned int number, char *base, t_formater *formaters);
+int			print_unsigned_int(t_uint number, t_formater *formaters);
+int			print_hexadecimal(t_uint number, char *base, t_formater *formaters);
 
 t_formater	*ft_formaters(char **string, t_formater *formaters);
 

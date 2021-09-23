@@ -34,7 +34,8 @@ static t_formater	*calc_formaters(long long number, t_formater *formaters)
 		formaters->before_zeros = number_aux;
 	else
 		formaters->before_spaces = number_aux;
-	if (has_space_flag(formaters->flags) && !formaters->prefix && formaters->before_spaces < 1)
+	if (has_space_flag(formaters->flags) && !formaters->prefix
+		&& formaters->before_spaces < 1)
 		formaters->before_spaces = 1;
 	return (formaters);
 }
